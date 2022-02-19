@@ -24,54 +24,84 @@ package alex;
 
 
 SEP_PROG = &&
+PTO_COMA = ;  ??????? hace falta poner \; ?????
+INT = int
+REAL = real
+BOOL = bool
+ASIG = \=
+TRUE = true
+FALSE = false
+MAS = \+
+MENOS = \-
+POR = \*
+DIV = /
+NEG = \- ???????????????????????????????????????????????????? igual que el menos?
+AND = and
+OR = or
+NOT = not
+BLT = <
+BGT = >
+BLE = <=
+BGE = >=
+EQ = ==
+NEQ = !=
+PAP = \(
+PCIERRE = \)
 
+ID = {letra}({letra}|{digito}|{subrayado})*
+letra = ([A-Z]|[a-z])
+digito = [0-9]
+subrayado = _
+
+NUM_INT = [\+,\-]? {parteEntera}
+NUM_REAL = {NUM_INT}\.{parteDecimal} {parteExp}?
+
+parteEntera = {digitoPos}{digito}*
+parteDecimal = \.({digito}*{digitoPositivo} | 0) ???? está bien????
+digitoPos = [1-9]
+parteExp = (e|E) parteEntera
 
 
 SEP = [ \t\r\b\n]
 COM = #[^\n,EOF]*
 
 
-letra  = ([A-Z]|[a-z])
-digitoPositivo = [1-9]
-digito = ({digitoPositivo}|0)
-parteEntera = {digitoPositivo}{digito}*
-parteDecimal = {digito}* {digitoPositivo}
-separador = [ \t\r\b\n]
-comentario = #[^\n]* 
-evalua = evalua
-donde = donde
-identificador = {letra}({letra}|{digito})*
-numeroEntero = [\+,\-]?{parteEntera}
-numeroReal = [\+,\-]?{parteEntera}\.{parteDecimal}
-operadorSuma = \+
-operadorResta = \-
-operadorMultiplicacion = \*
-operadorDivision = \/
-parentesisApertura = \(
-parentesisCierre = \)
-igual = \=
-coma  = \,
-
 %%
-{SEP_PROG}				  {return ops.unidadSEP_PROG();}
-
 {SEP}        			  {}
 {COM}        			  {}
 
 
-{separador}               {}
-{comentario}              {}
-{evalua}                  {return ops.unidadEvalua();}
-{donde}                   {return ops.unidadDonde();}
-{identificador}           {return ops.unidadId();}
-{numeroEntero}            {return ops.unidadEnt();}
-{numeroReal}              {return ops.unidadReal();}
-{operadorSuma}            {return ops.unidadSuma();}
-{operadorResta}           {return ops.unidadResta();}
-{operadorMultiplicacion}  {return ops.unidadMul();}
-{operadorDivision}        {return ops.unidadDiv();}
-{parentesisApertura}      {return ops.unidadPAp();}
-{parentesisCierre}        {return ops.unidadPCierre();} 
-{igual}                   {return ops.unidadIgual();} 
-{coma}                    {return ops.unidadComa();}
+{SEP_PROG}					  {return ops.unidadSEP_PROG();}
+{PTO_COMA}					  {return ops.unidadPTO_COMA();}
+{INT}						  {return ops.unidadINT();}
+{REAL}						  {return ops.unidadREAL();}
+{BOOL}						  {return ops.unidadBOOL();}
+{ASIG}						  {return ops.unidadASIG();}
+{TRUE}					 		{return ops.unidadTRUE();}
+{FALSE}							{return ops.unidadFALSE();}
+{MAS}					  {return ops.unidadMAS();}
+{MENOS}				 	 {return ops.unidadMENOS();}
+{POR}				  {return ops.unidadPOR();}
+{DIV}				  {return ops.unidadDIV();}
+{NEG}				  {return ops.unidadNEG();}
+{AND}				  {return ops.unidadAND();}
+{OR}				  {return ops.unidadOR();}
+{NOT}				  {return ops.unidadNOT();}
+{BLT}				  {return ops.unidadBLT();}
+{BGT}				  {return ops.unidadBGT();}
+{BLE}				  {return ops.unidadBLE();}
+{BGE}				  {return ops.unidadBGE();}
+{EQ}				  {return ops.unidadEQ();}
+{NEQ}				  {return ops.unidadNEQ();}
+{PAP}				  {return ops.unidadPAP();}
+{PCIERRE}				  {return ops.unidadPCIERRE();}
+{ID}				  {return ops.unidadID();}
+{NUM_INT}				  {return ops.unidadNUM_INT();}
+{NUM_REAL}				  {return ops.unidadNUM_REAL();}
+
 [^]                       {ops.error();}  
+
+
+
+
+
