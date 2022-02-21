@@ -67,9 +67,8 @@ COM = #[^\n,EOF]*
 
 
 %%
-{SEP}        			  {}
-{COM}        			  {}
-
+{SEP}        			      {}
+{COM}        			      {}
 
 {SEP_PROG}					  {return ops.unidadSEP_PROG();}
 {PTO_COMA}					  {return ops.unidadPTO_COMA();}
@@ -77,29 +76,29 @@ COM = #[^\n,EOF]*
 {REAL}						  {return ops.unidadREAL();}
 {BOOL}						  {return ops.unidadBOOL();}
 {ASIG}						  {return ops.unidadASIG();}
-{TRUE}					 		{return ops.unidadTRUE();}
-{FALSE}							{return ops.unidadFALSE();}
-{MAS}					  {return ops.unidadMAS();}
-{MENOS}				 	 {return ops.unidadMENOS();}
-{POR}				  {return ops.unidadPOR();}
-{DIV}				  {return ops.unidadDIV();}
-{NEG}				  {return ops.unidadNEG();}
-{AND}				  {return ops.unidadAND();}
-{OR}				  {return ops.unidadOR();}
-{NOT}				  {return ops.unidadNOT();}
-{BLT}				  {return ops.unidadBLT();}
-{BGT}				  {return ops.unidadBGT();}
-{BLE}				  {return ops.unidadBLE();}
-{BGE}				  {return ops.unidadBGE();}
-{EQ}				  {return ops.unidadEQ();}
-{NEQ}				  {return ops.unidadNEQ();}
-{PAP}				  {return ops.unidadPAP();}
-{PCIERRE}				  {return ops.unidadPCIERRE();}
-{ID}				  {return ops.unidadID();}
-{NUM_INT}				  {return ops.unidadNUM_INT();}
-{NUM_REAL}				  {return ops.unidadNUM_REAL();}
+{TRUE}					 	  {return ops.unidadTRUE();}
+{FALSE}						  {return ops.unidadFALSE();}
+{MAS}					      {return ops.unidadMAS();}
+{MENOS}				 	      {return ops.unidadMENOS();}
+{POR}				 		  {return ops.unidadPOR();}
+{DIV}				          {return ops.unidadDIV();}
+{NEG}				          {return ops.unidadNEG();}
+{AND}				          {return ops.unidadAND();}
+{OR}				          {return ops.unidadOR();}
+{NOT}				          return ops.unidadNOT();}
+{BLT}				          {return ops.unidadBLT();}
+{BGT}				          {return ops.unidadBGT();}
+{BLE}				          {return ops.unidadBLE();}
+{BGE}				          {return ops.unidadBGE();}
+{EQ}				          {return ops.unidadEQ();}
+{NEQ}				          {return ops.unidadNEQ();}
+{PAP}				          {return ops.unidadPAP();}
+{PCIERRE}				      {return ops.unidadPCIERRE();}
+{ID}				          {return ops.unidadID();}
+{NUM_INT}				      {return ops.unidadNUM_INT();}
+{NUM_REAL}				      {return ops.unidadNUM_REAL();}
 
-[^]                       {ops.error();}  
+[^]                           {ops.error();}  
 
 
 
