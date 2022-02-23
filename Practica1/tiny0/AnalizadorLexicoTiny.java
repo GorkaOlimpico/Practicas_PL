@@ -183,35 +183,56 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadLIT_REAL() {
      return new UnidadLexicaMultivaluada(filaInicio,columnaInicio,ClaseLexica.LIT_REAL,lex.toString());     
    }
-   //falta hacer de aquí para abajo-------------
-   private UnidadLexica unidadMas() {
+   
+   private UnidadLexica unidadSEP_PROG() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.SEP_PROG);     
+   }
+   private UnidadLexica unidadPTO_COMA() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.PTO_COMA);     
+   }
+   private UnidadLexica unidadASIG() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.ASIG);     
+   }
+   private UnidadLexica unidadMAS() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.MAS);     
-   }    
-   private UnidadLexica unidadMenos() {
+   }
+   private UnidadLexica unidadMENOS() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.MENOS);     
-   }    
-   private UnidadLexica unidadPor() {
+   }
+   private UnidadLexica unidadPOR() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.POR);     
-   }    
-   private UnidadLexica unidadDiv() {
+   }
+   private UnidadLexica unidadDIV() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.DIV);     
-   }    
-   private UnidadLexica unidadPAp() {
+   }
+   private UnidadLexica unidadNEG() { //?????????????? cómo lodiferencio del menos binario????????
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.NEG);     
+   }
+   private UnidadLexica unidadBLT() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BLT);     
+   }
+   private UnidadLexica unidadBLE() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BLE);     
+   }
+   private UnidadLexica unidadBGE() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BGE);     
+   }
+   private UnidadLexica unidadEQ() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.EQ);     
+   }
+   private UnidadLexica unidadNEQ() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.NEQ);     
+   }
+   private UnidadLexica unidadPAP() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.PAP);     
-   }    
-   private UnidadLexica unidadPCierre() {
+   }
+   private UnidadLexica unidadPCIERRE() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.PCIERRE);     
-   }    
-   private UnidadLexica unidadIgual() {
-     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.IGUAL);     
-   }    
-   private UnidadLexica unidadComa() {
-     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.COMA);     
-   }    
+   }
    private UnidadLexica unidadEof() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.EOF);     
    }   
-   //------------------------------------------
+
    
    private void error() {
      System.err.println("("+filaActual+','+columnaActual+"):Caracter inexperado");  
