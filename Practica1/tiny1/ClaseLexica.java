@@ -1,0 +1,7 @@
+package alex;
+
+public enum ClaseLexica {
+ SEP_PROG, PTO_COMA, INT, REAL, BOOL, ASIG, TRUE, FALSE,
+ MAS, MENOS, POR, DIV, NEG, AND, OR, NOT, BLT, BGT, BGE,
+ EQ, NEQ, PAP, PCIERRE, ID, LIT_INT, LIT_REAL
+}
