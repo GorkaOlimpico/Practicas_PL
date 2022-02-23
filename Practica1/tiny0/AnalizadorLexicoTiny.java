@@ -158,23 +158,23 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadId() {
      switch(lex.toString()) {
 	    case "int":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.INT);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_INT);
 		case "real":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.REAL);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_REAL);
 		case "bool":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BOOL);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_BOOL);
 		case "true":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.TRUE);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_TRUE);
 		case "false":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.FALSE);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_FALSE);
 		case "and":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.AND);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_AND);
 		case "or":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.OR);
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_OR);
 		case "not":    
-            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.NOT);			
+            return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_NOT);			
          default:    
-            return new UnidadLexicaMultivaluada(filaInicio,columnaInicio,ClaseLexica.IDEN,lex.toString());     
+            return new UnidadLexicaMultivaluada(filaInicio,columnaInicio,ClaseLexica.ID,lex.toString());     
       }
    }  
    private UnidadLexica unidadLIT_INT() {
