@@ -82,11 +82,11 @@ public class ALexOperations {
      return new UnidadLexicaMultivaluada(alex.fila(), alex.columna(),ClaseLexica.ID,
                                          alex.lexema()); 
   }
-  public UnidadLexica unidadNUM_INT() {
+  public UnidadLexica unidadLIT_INT() {
      return new UnidadLexicaMultivaluada(alex.fila(), alex.columna(),ClaseLexica.NUM_INT,
                                          alex.lexema()); 
   }
-  public UnidadLexica unidadNUM_REAL() {
+  public UnidadLexica unidadLIT_REAL() {
      return new UnidadLexicaMultivaluada(alex.fila(), alex.columna(),ClaseLexica.NUM_REAL,
                                          alex.lexema()); 
   }
