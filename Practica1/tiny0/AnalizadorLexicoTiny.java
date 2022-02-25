@@ -17,8 +17,8 @@ public class AnalizadorLexicoTiny {
    private static String NL = System.getProperty("line.separator");
    
    private static enum Estado {
-    INICIO, REC_1, REC_2, REC_3, REC_4, REC_5, REC_6,
-    REC_7, REC_8, REC_9
+    INICIO, REC_ID, REC_0, REC_ENT, REC_IDEC1, REC_DEC, REC_IDEC2,
+    REC_IEXP1, REC_EXP, REC_IEXP0, REC_IEXP2, REC_MAS, REC_MENOS
 	//Faltan los estados de los caracteres
 	}
 
@@ -40,53 +40,65 @@ public class AnalizadorLexicoTiny {
      while(true) {
          switch(estado) {
            case INICIO: 
-              if(hayLetra())  transita(Estado.REC_1);
-              else if (hayDigitoPos()) transita(Estado.REC_3);
-              else if (hayCero()) transita(Estado.REC_2);
+              if(hayLetra())  transita(Estado.REC_ID);
+              else if (hayMas()) transita(Estado.REC_MAS);
+              else if (hayCero()) transita(Estado.REC_MENOS);
 			  //Faltan los caracteres
               else error();
               break;
-           case REC_1: 
-              if (hayLetra() || hayDigito() || haySubrayado()) transita(Estado.REC_1);
+           case REC_ID: 
+              if (hayLetra() || hayDigito() || haySubrayado()) transita(Estado.REC_ID);
               else return unidadID();               
               break;
-           case REC_3:
-               if (hayDigito()) transita(Estado.REC_3);
-               else if (hayPunto()) transita(Estado.REC_4);
-			   else if (hayE()) transita(Estado.REC_7);
+           case REC_ENT:
+               if (hayDigito()) transita(Estado.REC_ENT);
+               else if (hayPunto()) transita(Estado.REC_IDEC1);
+			   else if (hayE()) transita(Estado.REC_IEXP1);
                else return unidadLIT_INT();
                break;
-           case REC_2:
-               if (hayPunto()) transita(Estado.REC_4);
+           case REC_0:
+               if (hayPunto()) transita(Estado.REC_IDEC1);
                else return unidadLIT_INT();
                break;
-           case REC_4:
-               if (hayDigito()) transita(Estado.REC_5);
+           case REC_IDEC1:
+               if (hayDigito()) transita(Estado.REC_DEC);
                else error();
                break;
-           case REC_5: 
-               if (hayDigitoPos()) transita(Estado.REC_5);
-               else if(hayCero()) transita(Estado.REC_6);
-			   else if(hayE()) transita(Estado.REC_7);
+           case REC_DEC: 
+               if (hayDigitoPos()) transita(Estado.REC_DEC);
+               else if(hayCero()) transita(Estado.REC_IDEC2);
+			   else if(hayE()) transita(Estado.REC_IEXP1);
                else return unidadLIT_REAL();
                break;
-		   case REC_6: 
-               if (hayDigitoPos()) transita(Estado.REC_5);
-               else if(hayCero()) transita(Estado.REC_6);
+		   case REC_IDEC2: 
+               if (hayDigitoPos()) transita(Estado.REC_DEC);
+               else if(hayCero()) transita(Estado.REC_IDEC2);
                else error();
                break;
-		   case REC_7: 
-               if (hayDigitoPos()) transita(Estado.REC_8);
-               else if(hayCero()) transita(Estado.REC_9);
+		   case REC_IEXP1: 
+               if (hayMas()) transita(Estado.REC_IEXP2);
+               else if(hayMenos()) transita(Estado.REC_IEXP2);
                else error();
                break;
-		   case REC_8: 
-               if (hayDigito()) transita(Estado.REC_8);
+		   case REC_EXP: 
+               if (hayDigito()) transita(Estado.REC_EXP);
                else return unidadLIT_REAL();
                break;
-		   case REC_9: 
+		   case REC_IEXP0: 
                return unidadLIT_REAL();
                break;
+		   case REC_IEXP2: 
+               if (hayDigitoPos()) transita(Estado.REC_EXP);
+               else if(hayCero()) transita(Estado.REC_IEXP0);
+               else error();
+		   case REC_MAS: 
+               if (hayDigitoPos()) transita(Estado.REC_ENT);
+               else if(hayCero()) transita(Estado.REC_0);
+               else return unidadMAS();
+		   case REC_MENOS: 
+               if (hayDigitoPos()) transita(Estado.REC_ENT);
+               else if(hayCero()) transita(Estado.REC_0);
+               else return unidadMENOS();
 			   //faltan los caracteres--------------
            case REC_POR: return unidadPor();
            case REC_DIV: return unidadDiv();              
@@ -154,6 +166,8 @@ public class AnalizadorLexicoTiny {
    private boolean hayEOF() {return sigCar == -1;}
    private boolean hayE() {return sigCar == 'e' || sigCar == 'E';}
    private boolean haySubrayado() {return sigCar == '_';}
+   private boolean hayMas() {return sigCar == '+';}
+   private boolean hayMenos() {return sigCar == '-';}
    
    private UnidadLexica unidadId() {
      switch(lex.toString()) {
