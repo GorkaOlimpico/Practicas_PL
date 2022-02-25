@@ -1,0 +1,1 @@
+-2 int 32 variable_1 54.0 4e60 +2.222 ; = == < <= > #comentario >= != ( ) * /

@@ -44,7 +44,9 @@ public class AnalizadorLexicoTiny {
            case INICIO: 
               if(hayLetra())  transita(Estado.REC_ID);
               else if (hayMas()) transita(Estado.REC_MAS);
-              else if (hayCero()) transita(Estado.REC_MENOS);
+              else if (hayMenos()) transita(Estado.REC_MENOS);
+              else if (hayCero()) transita(Estado.REC_0);
+              else if (hayDigitoPos()) transita(Estado.REC_ENT);
 			  else if (hayEt()) transita(Estado.REC_ISEP1);
 			  else if (hayPuntoComa()) transita(Estado.REC_PTO_COMA);
 			  else if (hayIgual()) transita(Estado.REC_ASIG);
@@ -58,6 +60,7 @@ public class AnalizadorLexicoTiny {
 			  else if (hayEOF()) transita(Estado.REC_EOF);
 			  else if (hayNL()) transita(Estado.INICIO);
 			  else if (haySep()) transita(Estado.INICIO);
+			  else if (hayAlmohadilla()) transita(Estado.REC_COM);
               else error();
               break;
            case REC_ID: 
@@ -92,6 +95,7 @@ public class AnalizadorLexicoTiny {
 		   case REC_IEXP1: 
                if (hayMas()) transita(Estado.REC_IEXP2);
                else if(hayMenos()) transita(Estado.REC_IEXP2);
+               else if(hayDigitoPos())transita(Estado.REC_EXP);
                else error();
                break;
 		   case REC_EXP: 
@@ -100,44 +104,52 @@ public class AnalizadorLexicoTiny {
                break;
 		   case REC_IEXP0: 
                return unidadLIT_REAL();
-               break;
+               
 		   case REC_IEXP2: 
                if (hayDigitoPos()) transita(Estado.REC_EXP);
                else if(hayCero()) transita(Estado.REC_IEXP0);
                else error();
+               break;
 		   case REC_MAS: 
                if (hayDigitoPos()) transita(Estado.REC_ENT);
                else if(hayCero()) transita(Estado.REC_0);
                else return unidadMAS();
+               break;
 		   case REC_MENOS: 
                if (hayDigitoPos()) transita(Estado.REC_ENT);
                else if(hayCero()) transita(Estado.REC_0);
                else return unidadMENOS();
+               break;
 		   case REC_ISEP1: 
                if (hayEt()) transita(Estado.REC_SEP);
                else error();
+               break;
 		   case REC_SEP: 
                return unidadSEP_PROG();
 		   case REC_PTO_COMA: 
                return unidadPTO_COMA();
 		   case REC_ASIG:
 			   if(hayIgual()) transita(Estado.REC_BEQ);
-               else return unidadPTO_COMA();  
+               else return unidadASIG();  
+			   break;
 		   case REC_BEQ: 
                return unidadBEQ();
 		   case REC_BLT:
 			   if(hayIgual()) transita(Estado.REC_BLE);
                else return unidadBLT();  
+			   break;
 		   case REC_BLE: 
                return unidadBLE();   
 		   case REC_BGT:
 			   if(hayIgual()) transita(Estado.REC_BGE);
-               else return unidadBGT();  
+               else return unidadBGT(); 
+			   break;
 		   case REC_BGE: 
                return unidadBGE();
 		   case REC_IBNE:
 			   if(hayIgual()) transita(Estado.REC_BNE);
                else error();  
+			   break;
 		   case REC_BNE: 
                return unidadBNE();   
 		   case REC_PAP: 
@@ -150,14 +162,11 @@ public class AnalizadorLexicoTiny {
                return unidadDIV();
 	       case REC_EOF: 
                return unidadEOF();
-			   
-			// Dejo los comentarios????????????????
            case REC_COM: 
                if (hayNL()) transitaIgnorando(Estado.INICIO);
                else if (hayEOF()) transita(Estado.REC_EOF);
                else transitaIgnorando(Estado.REC_COM);
                break;
-			//-------------------------------------
          }
      }    
    }
@@ -196,14 +205,11 @@ public class AnalizadorLexicoTiny {
    private boolean hayDigitoPos() {return sigCar >= '1' && sigCar <= '9';}
    private boolean hayCero() {return sigCar == '0';}
    private boolean hayDigito() {return hayDigitoPos() || hayCero();}
-   private boolean haySuma() {return sigCar == '+';}
-   private boolean hayResta() {return sigCar == '-';}
    private boolean hayPor() {return sigCar == '*';}
    private boolean hayDiv() {return sigCar == '/';}
    private boolean hayPAp() {return sigCar == '(';}
    private boolean hayPCierre() {return sigCar == ')';}
    private boolean hayIgual() {return sigCar == '=';}
-   private boolean hayComa() {return sigCar == ',';}
    private boolean hayPunto() {return sigCar == '.';}
    private boolean hayAlmohadilla() {return sigCar == '#';}
    private boolean haySep() {return sigCar == ' ' || sigCar == '\t' || sigCar=='\n';}
@@ -222,7 +228,7 @@ public class AnalizadorLexicoTiny {
    
    
    
-   private UnidadLexica unidadId() {
+   private UnidadLexica unidadID() {
      switch(lex.toString()) {
 	    case "int":    
             return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.R_INT);
@@ -250,7 +256,6 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadLIT_REAL() {
      return new UnidadLexicaMultivaluada(filaInicio,columnaInicio,ClaseLexica.LIT_REAL,lex.toString());     
    }
-   
    private UnidadLexica unidadSEP_PROG() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.SEP_PROG);     
    }
@@ -310,7 +315,7 @@ public class AnalizadorLexicoTiny {
    }
 
    public static void main(String arg[]) throws IOException {
-     Reader input = new InputStreamReader(new FileInputStream("input.txt"));
+     Reader input = new InputStreamReader(new FileInputStream("D:\\Escritorio\\Desktop\\PL\\git\\Practica1\\tiny0\\input.txt"));
      AnalizadorLexicoTiny al = new AnalizadorLexicoTiny(input);
      UnidadLexica unidad;
      do {
