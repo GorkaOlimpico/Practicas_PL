@@ -18,7 +18,10 @@ public class AnalizadorLexicoTiny {
    
    private static enum Estado {
     INICIO, REC_ID, REC_0, REC_ENT, REC_IDEC1, REC_DEC, REC_IDEC2,
-    REC_IEXP1, REC_EXP, REC_IEXP0, REC_IEXP2, REC_MAS, REC_MENOS
+    REC_IEXP1, REC_EXP, REC_IEXP0, REC_IEXP2, REC_MAS, REC_MENOS,
+	REC_ISEP1, REC_SEP, REC_PTO_COMA, REC_BEQ, REC_ASIG, REC_BLE,
+	REC_BLT, REC_BGT, REC_BGE, REC_IBNE, REC_BNE, REC_PAP, REC_PCIERRE
+	REC_POR, REC_DIV, REC_EOF
 	//Faltan los estados de los caracteres
 	}
 
@@ -43,7 +46,19 @@ public class AnalizadorLexicoTiny {
               if(hayLetra())  transita(Estado.REC_ID);
               else if (hayMas()) transita(Estado.REC_MAS);
               else if (hayCero()) transita(Estado.REC_MENOS);
-			  //Faltan los caracteres
+			  else if (hayEt()) transita(Estado.REC_ISEP1);
+			  else if (hayPuntoComa()) transita(Estado.REC_PTO_COMA);
+			  else if (hayIgual()) transita(Estado.REC_ASIG);
+			  else if (hayBLT()) transita(Estado.REC_BLT);
+			  else if (hayBGT()) transita(Estado.REC_BGT);
+			  else if (hayExclamacion()) transita(Estado.REC_IBNE);
+			  else if (hayPAp()) transita(Estado.REC_PAP);
+			  else if (hayPCierre()) transita(Estado.REC_PCIERRE);
+			  else if (hayPor()) transita(Estado.REC_POR);
+			  else if (hayDiv()) transita(Estado.REC_DIV);
+			  else if (hayEOF()) transita(Estado.REC_EOF);
+			  else if (hayNL()) transita(Estado.REC_INICIO);
+			  else if (haySep()) transita(Estado.REC_INICIO);
               else error();
               break;
            case REC_ID: 
@@ -99,20 +114,51 @@ public class AnalizadorLexicoTiny {
                if (hayDigitoPos()) transita(Estado.REC_ENT);
                else if(hayCero()) transita(Estado.REC_0);
                else return unidadMENOS();
-			   //faltan los caracteres--------------
-           case REC_POR: return unidadPor();
-           case REC_DIV: return unidadDiv();              
-           case REC_PAP: return unidadPAp();
-           case REC_PCIERR: return unidadPCierre();
-           case REC_IGUAL: return unidadIgual();
-           case REC_COMA: return unidadComa();
+		   case REC_ISEP1: 
+               if (hayEt()) transita(Estado.REC_SEP);
+               else error();
+		   case REC_SEP: 
+               return unidadSEP_PROG();
+		   case REC_PTO_COMA: 
+               return unidadPTO_COMA();
+		   case REC_ASIG:
+			   if(hayIgual()) transita(Estado.REC_BEQ);
+               else return unidadPTO_COMA();  
+		   case REC_BEQ: 
+               return unidadBEQ();
+		   case REC_BLT:
+			   if(hayIgual()) transita(Estado.REC_BLE);
+               else return unidadBLT();  
+		   case REC_BLE: 
+               return unidadBLE();   
+		   case REC_BGT:
+			   if(hayIgual()) transita(Estado.REC_BGE);
+               else return unidadBGT();  
+		   case REC_BGE: 
+               return unidadBGE();
+		   case REC_IBNE:
+			   if(hayIgual()) transita(Estado.REC_BNE);
+               else error();  
+		   case REC_BNE: 
+               return unidadBNE();   
+		   case REC_PAP: 
+               return unidadPAP();
+		   case REC_PCIERRE: 
+               return unidadPCIERRE();
+		   case REC_POR: 
+               return unidadPOR();
+		   case REC_DIV: 
+               return unidadDIV();
+	       case REC_EOF: 
+               return unidadEOF();
+			   
+			// Dejo los comentarios????????????????
            case REC_COM: 
                if (hayNL()) transitaIgnorando(Estado.INICIO);
                else if (hayEOF()) transita(Estado.REC_EOF);
                else transitaIgnorando(Estado.REC_COM);
                break;
 			//-------------------------------------
-           case REC_EOF: return unidadEof();
          }
      }    
    }
@@ -153,7 +199,7 @@ public class AnalizadorLexicoTiny {
    private boolean hayDigito() {return hayDigitoPos() || hayCero();}
    private boolean haySuma() {return sigCar == '+';}
    private boolean hayResta() {return sigCar == '-';}
-   private boolean hayMul() {return sigCar == '*';}
+   private boolean hayPor() {return sigCar == '*';}
    private boolean hayDiv() {return sigCar == '/';}
    private boolean hayPAp() {return sigCar == '(';}
    private boolean hayPCierre() {return sigCar == ')';}
@@ -168,6 +214,14 @@ public class AnalizadorLexicoTiny {
    private boolean haySubrayado() {return sigCar == '_';}
    private boolean hayMas() {return sigCar == '+';}
    private boolean hayMenos() {return sigCar == '-';}
+   private boolean hayEt() {return sigCar == '&';}
+   private boolean hayPuntoComa() {return sigCar == ';';}
+   private boolean hayBLT() {return sigCar == '<';}
+   private boolean hayBGT() {return sigCar == '>';}
+   private boolean hayExclamacion() {return sigCar == '!';}
+
+   
+   
    
    private UnidadLexica unidadId() {
      switch(lex.toString()) {
@@ -225,17 +279,20 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadBLT() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BLT);     
    }
+   private UnidadLexica unidadBGT() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BGT);     
+   }
    private UnidadLexica unidadBLE() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BLE);     
    }
    private UnidadLexica unidadBGE() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BGE);     
    }
-   private UnidadLexica unidadEQ() {
-     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.EQ);     
+   private UnidadLexica unidadBEQ() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BEQ);     
    }
-   private UnidadLexica unidadNEQ() {
-     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.NEQ);     
+   private UnidadLexica unidadBNE() {
+     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BNE);     
    }
    private UnidadLexica unidadPAP() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.PAP);     
@@ -243,7 +300,7 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadPCIERRE() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.PCIERRE);     
    }
-   private UnidadLexica unidadEof() {
+   private UnidadLexica unidadEOF() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.EOF);     
    }   
 
