@@ -20,9 +20,8 @@ public class AnalizadorLexicoTiny {
     INICIO, REC_ID, REC_0, REC_ENT, REC_IDEC1, REC_DEC, REC_IDEC2,
     REC_IEXP1, REC_EXP, REC_IEXP0, REC_IEXP2, REC_MAS, REC_MENOS,
 	REC_ISEP1, REC_SEP, REC_PTO_COMA, REC_BEQ, REC_ASIG, REC_BLE,
-	REC_BLT, REC_BGT, REC_BGE, REC_IBNE, REC_BNE, REC_PAP, REC_PCIERRE
-	REC_POR, REC_DIV, REC_EOF
-	//Faltan los estados de los caracteres
+	REC_BLT, REC_BGT, REC_BGE, REC_IBNE, REC_BNE, REC_PAP, REC_PCIERRE,
+	REC_POR, REC_DIV, REC_EOF, REC_COM
 	}
 
    private Estado estado;
@@ -57,8 +56,8 @@ public class AnalizadorLexicoTiny {
 			  else if (hayPor()) transita(Estado.REC_POR);
 			  else if (hayDiv()) transita(Estado.REC_DIV);
 			  else if (hayEOF()) transita(Estado.REC_EOF);
-			  else if (hayNL()) transita(Estado.REC_INICIO);
-			  else if (haySep()) transita(Estado.REC_INICIO);
+			  else if (hayNL()) transita(Estado.INICIO);
+			  else if (haySep()) transita(Estado.INICIO);
               else error();
               break;
            case REC_ID: 
