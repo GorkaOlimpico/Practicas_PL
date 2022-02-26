@@ -41,9 +41,6 @@ public class ALexOperations {
   public UnidadLexica unidadDIV() {
      return new UnidadLexicaUnivaluada(alex.fila(), alex.columna(),ClaseLexica.DIV); 
   }
-  public UnidadLexica unidadNEG() {
-     return new UnidadLexicaUnivaluada(alex.fila(), alex.columna(),ClaseLexica.NEG); 
-  }
   public UnidadLexica unidadAND() {
      return new UnidadLexicaUnivaluada(alex.fila(), alex.columna(),ClaseLexica.R_AND); 
   }
