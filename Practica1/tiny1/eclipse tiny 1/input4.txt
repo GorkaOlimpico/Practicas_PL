@@ -1,0 +1,11 @@
+real peso;
+bool pesado;
+record {
+	int y;
+	array[2] of int x
+}
+&&
+peso = (45.0 * 12e-56) / -2.05;
+pesado = (peso > 10.0) or (peso / 2 <= +0.0)
+x = if (pesado == y) then [1,2]
+.-error

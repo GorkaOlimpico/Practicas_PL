@@ -29,7 +29,7 @@ parteEntera = ({digitoPositivo}{digito}*|0)
 numeroEntero = [\+\-]?{parteEntera}							// NO SE SI HAY QUE PONER ESPACIO ENTRE \+ Y \- , ESTA SIN y creo que está bien
 
 parteDecimal = ({digito}* {digitoPositivo}|0)
-parteExponencial = [eE]parteEntera
+parteExponencial = [e|E]parteEntera
 numeroReal = [\+\-]?{parteEntera}(\.{parteDecimal})?([\+\-]?parteExponencial)?
 
 separador = [ \t\r\b\n]

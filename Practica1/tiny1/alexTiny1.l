@@ -26,10 +26,9 @@ letra  = ([A-Z]|[a-z])
 digitoPositivo = [1-9]
 digito = ({digitoPositivo}|0)
 parteEntera = ({digitoPositivo}{digito}*|0)
-numeroEntero = [\+\-]?{parteEntera}							// NO SE SI HAY QUE PONER ESPACIO ENTRE \+ Y \- , ESTA SIN y creo que está bien
-
+numeroEntero = [\+\-]?{parteEntera}							
 parteDecimal = ({digito}* {digitoPositivo}|0)
-parteExponencial = [eE]parteEntera
+parteExponencial = e{parteEntera}
 numeroReal = [\+\-]?{parteEntera}(\.{parteDecimal})?([\+\-]?parteExponencial)?
 
 separador = [ \t\r\b\n]
@@ -66,7 +65,7 @@ nl = nl
 var = var
 type = type
 
-identificador = {letra}({letra}|{digito}|\_)*				// Mirar si hay que poner \_ o _
+identificador = {letra}({letra}|{digito}|\_)*				
 
 operadorMas = \+
 operadorMenos = \-
