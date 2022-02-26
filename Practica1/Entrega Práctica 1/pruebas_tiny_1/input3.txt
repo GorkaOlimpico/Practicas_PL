@@ -1,0 +1,14 @@
+ false
+&& ; int real bool = true false + - * / and or not < > <= >= == != ( )
+  int
+	true
+variable_1
+#comentario
+155
++456
+-5.0
+-12.43e78
+%
+[] {} -> , . & string null proc if then else endif
+while do endwhile call record array of pointer new
+del read write nl var type
