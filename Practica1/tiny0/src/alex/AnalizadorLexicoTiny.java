@@ -277,9 +277,6 @@ public class AnalizadorLexicoTiny {
    private UnidadLexica unidadDIV() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.DIV);     
    }
-   private UnidadLexica unidadNEG() { //?????????????? cómo lodiferencio del menos binario????????
-     return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.NEG);     
-   }
    private UnidadLexica unidadBLT() {
      return new UnidadLexicaUnivaluada(filaInicio,columnaInicio,ClaseLexica.BLT);     
    }
@@ -315,7 +312,7 @@ public class AnalizadorLexicoTiny {
    }
 
    public static void main(String arg[]) throws IOException {
-     Reader input = new InputStreamReader(new FileInputStream("D:\\Escritorio\\Desktop\\PL\\git\\Practica1\\tiny0\\input.txt"));
+     Reader input = new InputStreamReader(new FileInputStream("input.txt"));
      AnalizadorLexicoTiny al = new AnalizadorLexicoTiny(input);
      UnidadLexica unidad;
      do {
