@@ -27,9 +27,9 @@ digitoPositivo = [1-9]
 digito = ({digitoPositivo}|0)
 parteEntera = ({digitoPositivo}{digito}*|0)
 numeroEntero = [\+\-]?{parteEntera}							
-parteDecimal = ({digito}* {digitoPositivo}|0)
-parteExponencial = e{parteEntera}
-numeroReal = [\+\-]?{parteEntera}(\.{parteDecimal})?([\+\-]?parteExponencial)?
+parteDecimal = \.({digito}* {digitoPositivo}|0)
+parteExponencial = (e|E) {numeroEntero}
+numeroReal = {numeroEntero}({parteExponencial}|{parteDecimal}{parteExponencial}|{parteDecimal})
 
 separador = [ \t\r\b\n]
 comentario = #[^\n]*
