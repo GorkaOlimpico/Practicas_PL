@@ -93,6 +93,8 @@ et = \&
 separadorPrograma = \&\&
 eof = eof
 
+cadena = \" ([^\n\b\r]*) \"
+
 %%
 {separador}               {}
 {comentario}              {}
@@ -157,4 +159,5 @@ eof = eof
 {et}                      {return ops.unidadET();}
 {separadorPrograma}       {return ops.unidadSEP_PROG();}
 {eof}                     {return ops.unidadEOF();}
+{cadena}                  {return ops.unidadLIT_CAD();}
 [^]                       {ops.error();}  

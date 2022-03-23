@@ -179,6 +179,11 @@ public UnidadLexica unidadMOD() {
      return new UnidadLexicaMultivaluada(alex.fila(), alex.columna(),ClaseLexica.LIT_REAL,
                                          alex.lexema()); 
   }
+
+  public UnidadLexica unidadLIT_CAD() {
+     return new UnidadLexicaMultivaluada(alex.fila(), alex.columna(),ClaseLexica.LIT_CAD,
+                                         alex.lexema()); 
+  }
  
   public UnidadLexica unidadEOF() {
      return new UnidadLexicaUnivaluada(alex.fila(), alex.columna(),ClaseLexica.EOF); 
