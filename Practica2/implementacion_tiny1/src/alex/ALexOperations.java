@@ -168,7 +168,7 @@ public class ALexOperations {
      return new UnidadLexica(alex.fila(), alex.columna(),ClaseLexica.R_TYPE,"R_TYPE"); 
   }
   public UnidadLexica unidadEOF() {
-     return new UnidadLexica(alex.fila(), alex.columna(),ClaseLexica.EOF,"<EOF>"); 
+     return new UnidadLexica(alex.fila(), alex.columna(),ClaseLexica.EOF,"EOF"); 
   }
   
   // Multivaluadas
