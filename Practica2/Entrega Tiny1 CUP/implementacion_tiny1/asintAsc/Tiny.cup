@@ -1,0 +1,119 @@
+package asintAsc;
+
+import java_cup.runtime.*;
+import alex.AnalizadorLexicoTiny;
+import alex.UnidadLexica;
+import errors.GestionErroresTiny;
+
+scan with {: return getScanner().next_token(); :};
+parser code {: 
+   private GestionErroresTiny errores;
+   public void syntax_error(Symbol unidadLexica) {
+     errores.errorSintactico((UnidadLexica)unidadLexica);
+   }
+:};
+init with {: 
+   errores = new GestionErroresTiny();
+   AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
+   alex.fijaGestionErrores(errores);
+:};
+
+
+terminal    sep_prog,pto_coma,asig,mas,menos,por,div,mod,blt,bgt,ble,bge,beq,bne,
+            pap,pcierre,cap,ccierre,llap,llcierre,flecha,coma,punto,et,r_int,r_real,r_bool,r_true,
+            r_false,r_and,r_or,r_not,r_string,r_null,r_proc,r_if,r_then,r_else,r_endif,r_while,r_do,r_endwhile,
+			r_call,r_record,r_array,r_of,r_pointer,r_new,r_read,r_write,r_nl,r_var,r_type,id,lit_int,lit_real,lit_cad,r_del;
+
+non terminal PROG, LDEC, DECS, DEC, DEC_VAR, DEC_TIPO, DEC_PROC, PARFOR, LPF, PF, TIPO, TIPO_BASICO, 
+			 TIPO_ID, TIPO_ARRAY, TIPO_RECORD, TIPO_POINTER, TAM, LCAMPO, CAMPO, LINST, INST, 
+			 INST_ASIG, INST_IF_THEN, INST_IF_THEN_ELSE, INST_WHILE, INST_READ, INST_WRITE, 
+			 INST_NL, INST_NEW, INST_CALL, INST_BLOQ, PARREL, LEREL, BLOQ, E0, E1,
+			 E2, E3, E4, E5, E6, E7, OPBAI1, OPBAI2, OPBNA, OPINDEX, OPACCREG, ACC, AUX_LINST;
+
+PROG ::= DECS LINST;
+DECS ::= LDEC sep_prog;
+DECS ::= ;
+LDEC ::= LDEC pto_coma DEC;
+LDEC ::= DEC;
+
+DEC ::= DEC_VAR | DEC_TIPO | DEC_PROC;
+DEC_VAR ::= r_var TIPO id;
+DEC_TIPO ::= r_type TIPO id;
+DEC_PROC ::= r_proc id PARFOR BLOQ;
+
+PARFOR ::= pap LPF pcierre;
+LPF ::= LPF coma PF;
+LPF ::= PF;
+LPF ::= ;
+PF ::= TIPO id;
+PF ::= TIPO et id;
+
+TIPO ::= TIPO_BASICO | TIPO_ID | TIPO_ARRAY | TIPO_RECORD | TIPO_POINTER ;
+TIPO_BASICO ::= r_real | r_int | r_bool | r_string ;
+TIPO_ID ::= id ;
+TIPO_ARRAY ::= r_array TAM r_of TIPO ;
+TAM ::= cap lit_int ccierre ;
+TIPO_RECORD ::= r_record llap LCAMPO llcierre ;
+LCAMPO ::= LCAMPO pto_coma CAMPO ;
+LCAMPO ::= CAMPO ;
+CAMPO ::= TIPO id ;
+TIPO_POINTER ::= r_pointer TIPO ;
+
+LINST ::= LINST pto_coma INST ;
+LINST ::= INST ;
+
+
+AUX_LINST ::= LINST ;
+AUX_LINST ::= ;
+
+INST ::= INST_ASIG | INST_IF_THEN | INST_IF_THEN_ELSE | INST_WHILE | INST_READ | INST_WRITE | INST_NL | INST_NEW | INST_CALL | INST_BLOQ ;
+
+INST_ASIG ::= E0 asig E0 ;
+INST_IF_THEN ::= r_if E0 r_then AUX_LINST r_endif ;
+INST_IF_THEN_ELSE ::= r_if E0 r_then AUX_LINST r_else AUX_LINST r_endif ;
+INST_WHILE ::= r_while E0 r_do AUX_LINST r_endwhile ;
+INST_READ ::= r_read E0 ;
+INST_WRITE ::= r_write E0 ;
+INST_NL ::= r_nl ;
+INST_NEW ::= r_new E0 ;
+INST_CALL ::= r_call id PARREL ;
+PARREL ::= pap LEREL pcierre ;
+LEREL ::= E0 coma LEREL ;
+LEREL ::= E0 ;
+LEREL ::= ;
+INST_BLOQ ::=  BLOQ ;
+
+BLOQ ::= llap PROG llcierre ;
+
+E0 ::= E1 mas E0 ;
+E0 ::= E1 menos E1 ;
+E0 ::= E1 ;
+
+E1 ::= E1 OPBAI1 E2 ;
+E1 ::= E2 ;
+
+E2 ::= E2 OPBAI2 E3 ;
+E2 ::= E3 ;
+
+E3 ::= E4 OPBNA E4 ;
+E3 ::= E4 ;
+
+E4 ::= menos E5 ;
+E4 ::= r_not E4 ;
+E4 ::= E5 ;
+
+E5 ::= E5 OPINDEX ;
+E5 ::= E5 OPACCREG ;
+E5 ::= E6 ;
+
+E6 ::= por E7 ;
+E6 ::= E7 ;
+
+E7 ::= lit_int | lit_real | r_true | r_false | lit_cad | id | r_null | pap E0 pcierre ;
+
+OPBAI1 ::= r_and | r_or ;
+OPBAI2 ::= blt | bgt | ble| bge | beq | bne ;
+OPBNA ::= por | div | mod ;
+OPINDEX ::= cap E0 ccierre ;
+OPACCREG ::= ACC id ;
+ACC ::= punto | flecha ;
