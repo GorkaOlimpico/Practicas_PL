@@ -1,0 +1,135 @@
+options {
+    STATIC = false;
+}
+
+PARSER_BEGIN(AnalizadorSintacticoTiny)
+package asint;
+
+public class AnalizadorSintacticoTiny{}
+
+PARSER_END(AnalizadorSintacticoTiny)
+  TOKEN:{<#letra:["a"-"z","A"-"Z"]>}
+  TOKEN:{<#digitoPositivo:["1"-"9"]>}
+  TOKEN:{<#digito:<digitoPositivo>|"0">} 
+  TOKEN:{<#parteEntera:<digitoPositivo> (<digito>)* |"0">} 
+  TOKEN:{<#parteDecimal: (<digito>)* <digitoPositivo>>}
+  TOKEN:{<#parteExp: ["e","E"] (["+","-"])? <parteEntera>>}
+  TOKEN:{<#AllowedCharacters: ~["\"","\r","\b","\n"]>}
+
+  SKIP:{<["\t"," ","\r","\b","\n"]>}  
+  SKIP:{<"#"(~["\n"])*>}
+
+  TOKEN: {<r_int:"int">}
+  TOKEN: {<r_real:"real">}
+  TOKEN: {<r_bool:"bool">}
+  TOKEN: {<r_true:"true">}
+  TOKEN: {<r_false:"false">}
+  TOKEN: {<r_and:"and">}
+  TOKEN: {<r_or:"or">}
+  TOKEN: {<r_not:"not">}
+  TOKEN: {<r_string:"string">}
+  TOKEN: {<r_null:"null">}
+  TOKEN: {<r_proc:"proc">}
+  TOKEN: {<r_if:"if">}
+  TOKEN: {<r_then:"then">}
+  TOKEN: {<r_else:"else">}
+  TOKEN: {<r_endif:"endif">}
+  TOKEN: {<r_while:"while">}
+  TOKEN: {<r_do:"do">}
+  TOKEN: {<r_endwhile:"endwhile">}
+  TOKEN: {<r_call:"call">}
+  TOKEN: {<r_record:"record">}
+  TOKEN: {<r_array:"array">}
+  TOKEN: {<r_of:"of">}
+  TOKEN: {<r_pointer:"pointer">}
+  TOKEN: {<r_new :"new">}
+  TOKEN: {<r_del:"del">}
+  TOKEN: {<r_read:"read">}
+  TOKEN: {<r_write:"write">}
+  TOKEN: {<r_nl:"nl">}
+  TOKEN: {<r_var:"var">}
+  TOKEN: {<r_type:"type">}
+
+  TOKEN:{<identificador:<letra>(<letra>|<digito>)*>}
+  TOKEN:{<numeroEntero: (["+","-"])? <parteEntera> >}
+  TOKEN:{<numeroReal: <numeroEntero> (<parteDecimal><parteExp> | <parteDecimal> | <parteExp>)>}
+  TOKEN:{<cadena: "\""(<AllowedCharacters>)* "\"">}
+
+  void SP()             : {} {PROG() <EOF>}
+  void PROG()           : {} {DECS() LINST()}
+  void DECS()           : {} {LDEC() "&&" | {}}
+  void LDEC()           : {} {DEC() RDEC()}
+  void RDEC()           : {} {";" DEC() RDEC() | {}}
+
+  void DEC()            : {} {DEC_VAR() | DEC_TIPO() | DEC_PROC()}
+  void DEC_VAR()        : {} {<r_var> TIPO() <identificador>}           // TODO: Revisar que esto está bien acomodado, comparte final
+  void DEC_TIPO()       : {} {<r_type> TIPO() <identificador>}
+  void DEC_PROC()       : {} {<r_proc> <identificador> PARFOR() BLOQ()}
+
+  void PARFOR()         : {} {"(" LPF() ")"}
+  void LPF()            : {} {PF() RPF()}
+  void RPF()            : {} {"," PF() RPF() | {}}
+  void PF()             : {} {TIPO() RP() <identificador>}
+  void RP()             : {} {{}| "&"}
+
+  void TIPO()           : {} {TIPO_BASICO() | TIPO_ID() | TIPO_ARRAY() | TIPO_RECORD() | TIPO_POINTER()}
+  void TIPO_BASICO()    : {} {<r_int> | <r_real> | <r_bool> | <r_string>}
+  void TIPO_ID()        : {} {<identificador>}
+  void TIPO_ARRAY()     : {} {<r_array> TAM() <r_of> TIPO()}
+  void TAM()            : {} {"[" <numeroEntero> "]"}
+  void TIPO_RECORD()    : {} {<r_record> "{" LCAMPO() "}"}
+  void LCAMPO()         : {} {CAMPO() RCAMPO()}
+  void RCAMPO()         : {} {";" CAMPO() RCAMPO() | {}}
+  void CAMPO()          : {} {TIPO() <identificador>}
+  void TIPO_POINTER()   : {} {<r_pointer> TIPO()}
+
+  void LINST()          : {} {INST() RINST()}
+  void RINST()          : {} {";" INST() RINST() | {}}
+  void AUX_LINST()      : {} {LINST() | {}}
+
+  void INST()           : {} {INST_ASIG() | INST_IF() | INST_WHILE() | INST_READ() | INST_WRITE() | INST_NL() | INST_NEW() | INST_CALL() | INST_BLOQ()}
+  void INST_ASIG()      : {} {E0() "=" E0()}
+  void INST_IF()        : {} {<r_if> E0() <r_then> AUX_LINST() INST_RIF() <r_endif>}
+  void INST_RIF()       : {} {<r_else> AUX_LINST() | {}}
+  void INST_WHILE()     : {} {<r_while> E0() <r_do> AUX_LINST() <r_endwhile>}
+  void INST_READ()      : {} {<r_read> E0()}
+  void INST_WRITE()     : {} {<r_write> E0()}
+  void INST_NL()        : {} {<r_nl>}
+  void INST_NEW()       : {} {<r_new> E0()}
+  void INST_CALL()      : {} {<r_call> <identificador> PARREL()}
+  void PARREL()         : {} {"(" LEREL() ")"}
+  void LEREL()          : {} {E0() REREL()}
+  void REREL()          : {} {"," E0() REREL() | {}}
+  void INST_BLOQ()      : {} {BLOQ()}
+
+  void BLOQ()           : {} {"{" PROG() "}"}
+
+  void E0()             : {} {E1() RE0()}
+  void RE0()            : {} {"+" E0() | "-" E1() | {}}
+
+  void E1()             : {} {E2() RE1()}
+  void RE1()            : {} {OPBAI1() E2() RE1() | {}}
+
+  void E2()             : {} {E3() RE2()}
+  void RE2()            : {} {OPBAI2() E3() RE2() | {}}
+
+  void E3()             : {} {E4() RE3()}
+  void RE3()            : {} {OPBNA() E4() RE3() | {}}
+
+  void E4()             : {} {"+" E5() | <r_not> E4() | E5()}
+
+  void E5()             : {} {E6() RE5()}
+  void RE5()            : {} {OP5() RE5() | {}}
+
+  void E6()             : {} {"*" E6()}
+  void RE6()            : {} {E7()}
+
+  void E7()             : {} {<numeroEntero> | <numeroReal> | <cadena> | <r_true> | <r_false> | <identificador> | <r_null> | "(" E0() ")"}
+
+  void OPBAI1()         : {} {<r_and> | <r_or>}
+  void OPBAI2()         : {} {"!=" | "==" | "<" | ">" | "<=" | ">="}
+  void OPBNA()          : {} {"*" | "/" | "%"}
+  void OP5()            : {} {OPINDEX() | OPACCREG()}
+  void OPINDEX()        : {} {"[" E0() "]"}
+  void OPACCREG()       : {} {ACC() <identificador>}
+  void ACC()            : {} {"." | "->"}
