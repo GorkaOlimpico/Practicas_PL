@@ -2,12 +2,12 @@ options {
     STATIC = false;
 }
 
-PARSER_BEGIN(AnalizadorSintacticoTiny)
+PARSER_BEGIN(AnalizadorSintacticoDescTiny)
 package asint;
 
-public class AnalizadorSintacticoTiny{}
+public class AnalizadorSintacticoDescTiny{}
 
-PARSER_END(AnalizadorSintacticoTiny)
+PARSER_END(AnalizadorSintacticoDescTiny)
   TOKEN:{<#letra:["a"-"z","A"-"Z"]>}
   TOKEN:{<#digitoPositivo:["1"-"9"]>}
   TOKEN:{<#digito:<digitoPositivo>|"0">} 
@@ -98,7 +98,7 @@ PARSER_END(AnalizadorSintacticoTiny)
   void INST_NEW()       : {} {<r_new> E0()}
   void INST_CALL()      : {} {<r_call> <identificador> PARREL()}
   void PARREL()         : {} {"(" LEREL() ")"}
-  void LEREL()          : {} {E0() REREL()}
+  void LEREL()          : {} {E0() REREL() | {}}
   void REREL()          : {} {"," E0() REREL() | {}}
   void INST_BLOQ()      : {} {BLOQ()}
 

@@ -1,4 +1,4 @@
-package asinMain;
+//package asinMain;
 
 //Añadir cup.jar a librerias
 import java.io.FileInputStream;
@@ -6,8 +6,8 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import alex.AnalizadorLexicoTiny;
-import asintAsc.AnalizadorSintacticoAscTiny;
-import asintDesc.AnalizadorSintacticoDescTiny;
+//import ASintacticoAscendente.AnalizadorSintacticoAscTiny;
+import ASintacticoDescendente.AnalizadorSintacticoDescTiny;
 
 public class Main {
    public static void main(String[] args) throws Exception {
