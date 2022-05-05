@@ -1,14 +1,15 @@
-package c_ast_descendente_manual;
+package errors;
 
+import alex.ClaseLexica;
 
 public class GestionErroresTiny {
    public void errorLexico(int fila, int col, String lexema) {
-     System.out.println("ERROR fila "+fila+","+col+": Caracter inexperado: "+lexema); 
+     System.out.println("ERROR Léxico fila "+fila+","+col+": Caracter inexperado: "+lexema); 
      System.exit(1);
    }  
    public void errorSintactico(int fila, int col, ClaseLexica encontrada, 
                                ClaseLexica ... esperadas) {
-     System.out.print("ERROR fila "+fila+","+col+": Encontrado "+encontrada+" Se esperada: ");
+     System.out.print("ERROR Sintáctico fila "+fila+","+col+": Encontrado "+encontrada+" Se esperada: ");
      for(ClaseLexica esperada: esperadas)
          System.out.print(esperada+" ");
      System.out.println();

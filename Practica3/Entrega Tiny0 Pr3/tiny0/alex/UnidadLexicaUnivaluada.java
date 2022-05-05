@@ -1,4 +1,4 @@
-package c_ast_descendente_manual;
+package alex;
 
 public class UnidadLexicaUnivaluada extends UnidadLexica {
    public String lexema() {throw new UnsupportedOperationException();}   

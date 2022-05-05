@@ -1,4 +1,4 @@
-package c_ast_descendente_manual;
+package alex;
 
 public class UnidadLexicaMultivaluada extends UnidadLexica {
   private String lexema;

@@ -1,4 +1,4 @@
-package c_ast_descendente_manual;
+package alex;
 
 public abstract class UnidadLexica {
    private ClaseLexica clase;
