@@ -599,11 +599,11 @@ public class TinyASint {
 
 	}
 
-	public static class Prog_con_decs extends Prog {
+	public static class Prog_con_dec extends Prog {
 		private LInst linst;
 		private LDecs ldecs;
 
-		public Prog_con_decs(LDecs ldecs, LInst linst) {
+		public Prog_con_dec(LDecs ldecs, LInst linst) {
 			super();
 			this.linst = linst;
 			this.ldecs = ldecs;
@@ -623,10 +623,10 @@ public class TinyASint {
 		}
 	}
 
-	public static class Prog_sin_decs extends Prog {
+	public static class Prog_sin_dec extends Prog {
 		private LInst linst;
 
-		public Prog_sin_decs(LInst linst) {
+		public Prog_sin_dec(LInst linst) {
 			super();
 			this.linst = linst;
 		}
@@ -704,10 +704,10 @@ public class TinyASint {
 		}
 	}
 
-	public static class Tipo_Puntero extends Tipo {
+	public static class Tipo_Pointer extends Tipo {
 		private Tipo t;
 
-		public Tipo_Puntero(Tipo t) {
+		public Tipo_Pointer(Tipo t) {
 			super();
 			this.t = t;
 		}
@@ -744,15 +744,15 @@ public class TinyASint {
 		}
 	}
 
-	public static class Tipo_Reg extends Tipo {
-		private LCampos lcampos;
+	public static class Tipo_Record extends Tipo {
+		private LCampo lcampos;
 
-		public Tipo_Reg(LCampos lcampos) {
+		public Tipo_Record(LCampo lcampos) {
 			super();
 			this.lcampos = lcampos;
 		}
 
-		public LCampos lcampos() {
+		public LCampo lcampos() {
 			return lcampos;
 		}
 
@@ -761,17 +761,17 @@ public class TinyASint {
 		}
 	}
 
-	public static abstract class LCampos {
-		public LCampos() {
+	public static abstract class LCampo {
+		public LCampo() {
 		}
 
 		public abstract void procesa(Procesamiento p);
 	}
 
-	public static class LCampos_uno extends LCampos {
+	public static class Campo_una extends LCampo {
 		private Campo campo;
 
-		public LCampos_uno(Campo campo) {
+		public Campo_una(Campo campo) {
 			super();
 			this.campo = campo;
 		}
@@ -786,11 +786,11 @@ public class TinyASint {
 
 	}
 
-	public static class LCampos_muchos extends LCampos {
+	public static class Campo_muchas extends LCampo {
 		private Campo campo;
-		private LCampos campos;
+		private LCampo campos;
 
-		public LCampos_muchos(LCampos campos, Campo campo) {
+		public Campo_muchas(LCampo campos, Campo campo) {
 			super();
 			this.campos = campos;
 			this.campo = campo;
@@ -800,7 +800,7 @@ public class TinyASint {
 			return campo;
 		}
 
-		public LCampos campos() {
+		public LCampo campos() {
 			return campos;
 		}
 
@@ -1218,25 +1218,16 @@ public class TinyASint {
 
 	}
 
-	public static class Dec_Proc_sin_params extends Dec_Proc {
-		public Dec_Proc_sin_params(StringLocalizado id, Bloque b) {
-			super(id, b);
-		}
 
-		public void procesa(Procesamiento p) {
-			p.procesa(this);
-		}
-	}
+	public static class Dec_proc extends Dec_Proc {
+		private LPF lparams;
 
-	public static class Dec_Proc_con_params extends Dec_Proc {
-		private LParams lparams;
-
-		public Dec_Proc_con_params(StringLocalizado id, LParams lparams, Bloque b) {
+		public Dec_proc(StringLocalizado id, LPF lparams, Bloque b) {
 			super(id, b);
 			this.lparams = lparams;
 		}
 
-		public LParams lparams() {
+		public LPF lparams() {
 			return lparams;
 		}
 
@@ -1245,22 +1236,22 @@ public class TinyASint {
 		}
 	}
 
-	public static abstract class LParams {
-		public LParams() {
+	public static abstract class LPF {
+		public LPF() {
 		}
 
 		public abstract void procesa(Procesamiento p);
 	}
 
-	public static class LParams_uno extends LParams {
-		private Param param;
+	public static class Param_una extends LPF {
+		private PF param;
 
-		public LParams_uno(Param param) {
+		public Param_una(PF param) {
 			super();
 			this.param = param;
 		}
 
-		public Param param() {
+		public PF param() {
 			return param;
 		}
 
@@ -1269,21 +1260,21 @@ public class TinyASint {
 		}
 	}
 
-	public static class LParams_muchos extends LParams {
-		private Param param;
-		private LParams lparams;
+	public static class Param_muchas extends LPF {
+		private PF param;
+		private LPF lparams;
 
-		public LParams_muchos(LParams lparams, Param param) {
+		public Param_muchas(LPF lparams, PF param) {
 			super();
 			this.lparams = lparams;
 			this.param = param;
 		}
 
-		public Param param() {
+		public PF param() {
 			return param;
 		}
 
-		public LParams lparams() {
+		public LPF lparams() {
 			return lparams;
 		}
 
@@ -1292,11 +1283,11 @@ public class TinyASint {
 		}
 	}
 
-	public static abstract class Param {
+	public static abstract class PF {
 		private StringLocalizado id;
 		private Tipo tipo;
 
-		public Param(Tipo tipo, StringLocalizado id) {
+		public PF(Tipo tipo, StringLocalizado id) {
 			this.id = id;
 			this.tipo = tipo;
 		}
@@ -1313,7 +1304,7 @@ public class TinyASint {
 
 	}
 
-	public static class Param_amp extends Param {
+	public static class Param_amp extends PF {
 		public Param_amp(Tipo tipo, StringLocalizado id) {
 			super(tipo, id);
 		}
@@ -1323,7 +1314,7 @@ public class TinyASint {
 		}
 	}
 
-	public static class Param_sin_amp extends Param {
+	public static class Param_sin_amp extends PF {
 		public Param_sin_amp(Tipo tipo, StringLocalizado id) {
 			super(tipo, id);
 		}
@@ -1368,12 +1359,12 @@ public class TinyASint {
 	}
 
 	// Constructoras
-	public Prog prog_con_decs(LDecs ldecs, LInst linst) {
-		return new Prog_con_decs(ldecs, linst);
+	public Prog prog_con_dec(LDecs ldecs, LInst linst) {
+		return new Prog_con_dec(ldecs, linst);
 	}
 
 	public Prog prog_sin_decs(LInst linst) {
-		return new Prog_sin_decs(linst);
+		return new Prog_sin_dec(linst);
 	}
 
 	public LDecs decs_una(Dec dec) {
@@ -1392,27 +1383,23 @@ public class TinyASint {
 		return new Dec_Type(tipo, id);
 	}
 
-	public Dec dec_proc_con_params(StringLocalizado id, LParams lparams, Bloque bloque) {
-		return new Dec_Proc_con_params(id, lparams, bloque);
+	public Dec dec_proc(StringLocalizado id, LPF lparams, Bloque bloque) {
+		return new Dec_proc(id, lparams, bloque);
 	}
 
-	public Dec dec_proc_sin_params(StringLocalizado id, Bloque bloque) {
-		return new Dec_Proc_sin_params(id, bloque);
+	public LPF param_una(PF param) {
+		return new Param_una(param);
 	}
 
-	public LParams l_params_uno(Param param) {
-		return new LParams_uno(param);
+	public LPF param_muchas(LPF lparams, PF param) {
+		return new Param_muchas(lparams, param);
 	}
 
-	public LParams l_params_muchos(LParams lparams, Param param) {
-		return new LParams_muchos(lparams, param);
-	}
-
-	public Param param_con_amp(Tipo tipo, StringLocalizado id) {
+	public PF param_con_et(Tipo tipo, StringLocalizado id) {
 		return new Param_amp(tipo, id);
 	}
 
-	public Param param_sin_amp(Tipo tipo, StringLocalizado id) {
+	public PF param_sin_et(Tipo tipo, StringLocalizado id) {
 		return new Param_sin_amp(tipo, id);
 	}
 
@@ -1436,35 +1423,35 @@ public class TinyASint {
 		return new Tipo_Id(id);
 	}
 
-	public Tipo tipo_Puntero(Tipo t) {
-		return new Tipo_Puntero(t);
+	public Tipo tipo_Pointer(Tipo t) {
+		return new Tipo_Pointer(t);
 	}
 
 	public Tipo tipo_Array(StringLocalizado id, Tipo t) {
 		return new Tipo_Array(id, t);
 	}
 
-	public Tipo tipo_Reg(LCampos lcampos) {
-		return new Tipo_Reg(lcampos);
+	public Tipo tipo_Record(LCampo lcampos) {
+		return new Tipo_Record(lcampos);
 	}
 
-	public LCampos l_campos_uno(Campo campo) {
-		return new LCampos_uno(campo);
+	public LCampo campo_una(Campo campo) {
+		return new Campo_una(campo);
 	}
 
-	public LCampos l_campos_muchos(LCampos campos, Campo campo) {
-		return new LCampos_muchos(campos, campo);
+	public LCampo campo_muchas(LCampo campos, Campo campo) {
+		return new Campo_muchas(campos, campo);
 	}
 
 	public Campo campo(Tipo t, StringLocalizado id) {
 		return new Campo(t, id);
 	}
 
-	public LInst l_inst_una(Inst inst) {
+	public LInst lista_inst_una(Inst inst) {
 		return new Lista_inst_una(inst);
 	}
 
-	public LInst l_inst_muchas(LInst linst, Inst inst) {
+	public LInst lista_inst_muchas(LInst linst, Inst inst) {
 		return new Lista_inst_muchas(linst, inst);
 	}
 

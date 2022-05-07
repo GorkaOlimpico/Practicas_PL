@@ -1,6 +1,7 @@
 package asint;
 
 import asint.TinyASint.And;
+
 import asint.TinyASint.Beq;
 import asint.TinyASint.Bge;
 import asint.TinyASint.Bgt;
@@ -51,8 +52,8 @@ import asint.TinyASint.Num;
 import asint.TinyASint.Or;
 import asint.TinyASint.Param_amp;
 import asint.TinyASint.Param_sin_amp;
-import asint.TinyASint.Prog_con_decs;
-import asint.TinyASint.Prog_sin_decs;
+import asint.TinyASint.Prog_con_dec;
+import asint.TinyASint.Prog_sin_dec;
 import asint.TinyASint.Punto;
 import asint.TinyASint.R_false;
 import asint.TinyASint.R_null;
@@ -205,13 +206,13 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 	}
 
 	@Override
-	public void procesa(Prog_con_decs prog) {
+	public void procesa(Prog_con_dec prog) {
 		
 		
 	}
 
 	@Override
-	public void procesa(Prog_sin_decs prog) {
+	public void procesa(Prog_sin_dec prog) {
 		
 		
 	}
