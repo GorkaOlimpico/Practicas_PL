@@ -393,11 +393,7 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 		
 	}
 
-	@Override
-	public void procesa(Dec_proc dec_proc) {
-		
-		
-	}
+
 
 	@Override
 	public void procesa(Param_sin_et param_sin_et) {
@@ -407,6 +403,24 @@ public class ProcesamientoPorDefecto implements Procesamiento {
 
 	@Override
 	public void procesa(Param_con_et param_amp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(Par_reg_vacia par_reg_vacia) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(Dec_proc_con_params dec_proc_con_params) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void procesa(Dec_proc_sin_params dec_proc_sin_params) {
 		// TODO Auto-generated method stub
 		
 	}

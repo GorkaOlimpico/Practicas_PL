@@ -1115,7 +1115,19 @@ public class TinyASint {
 
 		public abstract void procesa(Procesamiento p);
 	}
+	
+	public static class Par_reg_vacia extends LParreg {
+		
+		public Par_reg_vacia() {
+			super();
 
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
 	public static class Par_reg_una extends LParreg {
 		private Exp exp;
 		
@@ -1209,16 +1221,39 @@ public class TinyASint {
 
 	}
 
-	public static class Dec_proc extends Dec {
+	public static abstract class Dec_proc extends Dec {
 		private Bloque bloque;
-		private LPF lparams;
 		
-		public Dec_proc(StringLocalizado id, LPF lparams, Bloque b) {
+		public Dec_proc(StringLocalizado id, Bloque b) {
 			super(id);
 			this.bloque = b;
+
+		}
+
+		public Bloque bloque() {
+			return bloque;
+		}
+
+	}
+	
+	public static class Dec_proc_sin_params extends Dec_proc {
+		public Dec_proc_sin_params(StringLocalizado id, Bloque b) {
+			super(id, b);
+		}
+
+		public void procesa(Procesamiento p) {
+			p.procesa(this);
+		}
+	}
+	
+	public static class Dec_proc_con_params extends Dec_proc {
+		private LPF lparams;
+
+		public Dec_proc_con_params(StringLocalizado id, LPF lparams, Bloque b) {
+			super(id, b);
 			this.lparams = lparams;
 		}
-		
+
 		public LPF lparams() {
 			return lparams;
 		}
@@ -1226,13 +1261,7 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
-		
-		public Bloque bloque() {
-			return bloque;
-		}
-
 	}
-
 
 	public static abstract class LPF {
 		public LPF() {
@@ -1364,8 +1393,12 @@ public class TinyASint {
 		return new Dec_Type(tipo, id);
 	}
 
-	public Dec dec_proc(StringLocalizado id, LPF lparams, Bloque bloque) {
-		return new Dec_proc(id, lparams, bloque);
+	public Dec dec_proc_con_params(StringLocalizado id, LPF lparams, Bloque bloque) {
+		return new Dec_proc_con_params(id, lparams, bloque);
+	}
+	
+	public Dec dec_proc_sin_params(StringLocalizado id, Bloque bloque) {
+		return new Dec_proc_sin_params(id, bloque);
 	}
 
 	public LPF param_una(PF param) {
@@ -1487,6 +1520,10 @@ public class TinyASint {
 
 	public Inst inst_call_con_params(StringLocalizado id, LParreg params) {
 		return new Inst_call_con_params(id, params);
+	}
+	
+	public LParreg par_reg_vacia() {
+		return new Par_reg_vacia();
 	}
 
 	public LParreg par_reg_una(Exp exp) {

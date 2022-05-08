@@ -50,11 +50,19 @@ public class Impresion extends ProcesamientoPorDefecto {
 
 	}
 
-	public void procesa(Dec_proc dec) {
+	public void procesa(Dec_proc_con_params dec) {
 		System.out.print(" proc ");
 		System.out.print(dec.id());
 		System.out.print("(");
 		dec.lparams().procesa(this);
+		System.out.print(")");
+		dec.bloque().procesa(this);
+
+	}
+	public void procesa(Dec_proc_sin_params dec) {
+		System.out.print(" proc ");
+		System.out.print(dec.id());
+		System.out.print("(");
 		System.out.print(")");
 		dec.bloque().procesa(this);
 
@@ -137,7 +145,7 @@ public class Impresion extends ProcesamientoPorDefecto {
 
 	public void procesa(Campo campo) {
 		campo.tipo().procesa(this);
-		System.out.print(campo.id());
+		System.out.print(" " +campo.id());
 	}
 
 	public void procesa(Lista_inst_una lista_inst_una) {
@@ -377,7 +385,7 @@ public class Impresion extends ProcesamientoPorDefecto {
 	}
 
 	public void procesa(R_false r_false) {
-		System.out.print(" true ");
+		System.out.print(" false ");
 	}
 
 	public void procesa(Punto punto) {

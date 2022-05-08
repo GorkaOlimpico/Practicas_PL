@@ -43,6 +43,7 @@ public interface Procesamiento {
 	void procesa(Campo campo);
 	void procesa(Aux_linst_vacia aux_linst_vacia);
 	void procesa(Aux_linst_una aux_linst_una);
+	void procesa(Par_reg_vacia par_reg_vacia);
 	void procesa(Par_reg_una par_reg_una);
 	void procesa(Par_reg_muchas par_reg_muchas);
 	void procesa(Param_sin_et param_sin_et);
@@ -69,5 +70,6 @@ public interface Procesamiento {
 	void procesa(Inst_call_con_params inst_call_con_params);
 	void procesa(Inst_call_sin_params inst_call_sin_params);
 	void procesa(Inst_compuesta inst_compuesta);
-	void procesa(Dec_proc dec_Proc);  
+	void procesa(Dec_proc_con_params dec_proc_con_params);  
+	void procesa(Dec_proc_sin_params dec_proc_sin_params);
 }

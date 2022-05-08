@@ -1,7 +1,4 @@
 
-
-proc lee(){};
-
 proc lee_nombres(tListaNombres & nombres,int y,record {int y; int j} a,
 	record{
 		record{
