@@ -391,8 +391,8 @@ public class TinyASint {
 		}
 	}
 
-	public static class NumEnt extends Num {
-		public NumEnt(StringLocalizado num) {
+	public static class Num_int extends Num {
+		public Num_int(StringLocalizado num) {
 			super(num);
 		}
 
@@ -401,8 +401,8 @@ public class TinyASint {
 		}
 	}
 
-	public static class NumReal extends Num {
-		public NumReal(StringLocalizado num) {
+	public static class Num_Real extends Num {
+		public Num_Real(StringLocalizado num) {
 			super(num);
 		}
 
@@ -865,25 +865,27 @@ public class TinyASint {
 
 	public static class Inst_if_then extends Inst {
 		private Exp exp;
-		private LInst_aux linst_aux;
+		private LInst_aux aux_linst_una;
 
-		public Inst_if_then(Exp exp, LInst_aux linst_aux) {
+		public Inst_if_then(Exp exp, LInst_aux aux_linst_una) {
 			super();
 			this.exp = exp;
-			this.linst_aux = linst_aux;
+			this.aux_linst_una = aux_linst_una;
 		}
 
 		public Exp exp() {
 			return exp;
 		}
 
-		public LInst_aux linst_aux() {
-			return linst_aux;
+		public LInst_aux aux_linst_una() {
+			return aux_linst_una;
 		}
 
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+
+		
 	}
 
 	public static class Inst_if_then_else extends Inst {
@@ -917,20 +919,20 @@ public class TinyASint {
 
 	public static class Inst_while extends Inst {
 		private Exp exp;
-		private LInst_aux linst_aux;
+		private LInst_aux aux_linst_una;
 
-		public Inst_while(Exp exp, LInst_aux linst_aux) {
+		public Inst_while(Exp exp, LInst_aux aux_linst_una) {
 			super();
 			this.exp = exp;
-			this.linst_aux = linst_aux;
+			this.aux_linst_una = aux_linst_una;
 		}
 
 		public Exp exp() {
 			return exp;
 		}
 
-		public LInst_aux linst_aux() {
-			return linst_aux;
+		public LInst_aux aux_linst_una() {
+			return aux_linst_una;
 		}
 
 		public void procesa(Procesamiento p) {
@@ -1018,9 +1020,9 @@ public class TinyASint {
 
 	public static class Inst_call_con_params extends Inst {
 		private StringLocalizado id;
-		private LReal_params real_params;
+		private LParreg real_params;
 
-		public Inst_call_con_params(StringLocalizado id, LReal_params real_params) {
+		public Inst_call_con_params(StringLocalizado id, LParreg real_params) {
 			super();
 			this.id = id;
 			this.real_params = real_params;
@@ -1030,7 +1032,7 @@ public class TinyASint {
 			return id;
 		}
 
-		public LReal_params real_params() {
+		public LParreg real_params() {
 			return real_params;
 		}
 
@@ -1080,8 +1082,8 @@ public class TinyASint {
 		public abstract void procesa(Procesamiento p);
 	}
 
-	public static class LInst_aux_vacia extends LInst_aux {
-		public LInst_aux_vacia() {
+	public static class Aux_linst_vacia extends LInst_aux {
+		public Aux_linst_vacia() {
 			super();
 		}
 
@@ -1090,10 +1092,10 @@ public class TinyASint {
 		}
 	}
 
-	public static class LInst_aux_llena extends LInst_aux {
+	public static class Aux_linst_una extends LInst_aux {
 		private LInst linst;
 
-		public LInst_aux_llena(LInst linst) {
+		public Aux_linst_una(LInst linst) {
 			super();
 			this.linst = linst;
 		}
@@ -1107,17 +1109,17 @@ public class TinyASint {
 		}
 	}
 
-	public static abstract class LReal_params {
-		public LReal_params() {
+	public static abstract class LParreg {
+		public LParreg() {
 		}
 
 		public abstract void procesa(Procesamiento p);
 	}
 
-	public static class LReal_Params_uno extends LReal_params {
+	public static class Par_reg_una extends LParreg {
 		private Exp exp;
-
-		public LReal_Params_uno(Exp exp) {
+		
+		public Par_reg_una(Exp exp) {
 			super();
 			this.exp = exp;
 		}
@@ -1129,13 +1131,16 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+
+
 	}
 
-	public static class LReal_Params_muchos extends LReal_params {
+	public static class Par_reg_muchas extends LParreg {
 		private Exp exp;
-		private LReal_params params;
+		private LParreg params;
 
-		public LReal_Params_muchos(LReal_params params, Exp exp) {
+		public Par_reg_muchas(Exp exp, LParreg params) {
 			super();
 			this.params = params;
 			this.exp = exp;
@@ -1145,7 +1150,7 @@ public class TinyASint {
 			return exp;
 		}
 
-		public LReal_params params() {
+		public LParreg params() {
 			return params;
 		}
 
@@ -1204,29 +1209,16 @@ public class TinyASint {
 
 	}
 
-	public static abstract class Dec_Proc extends Dec {
+	public static class Dec_proc extends Dec {
 		private Bloque bloque;
-
-		public Dec_Proc(StringLocalizado id, Bloque b) {
+		private LPF lparams;
+		
+		public Dec_proc(StringLocalizado id, LPF lparams, Bloque b) {
 			super(id);
 			this.bloque = b;
-		}
-
-		public Bloque bloque() {
-			return bloque;
-		}
-
-	}
-
-
-	public static class Dec_proc extends Dec_Proc {
-		private LPF lparams;
-
-		public Dec_proc(StringLocalizado id, LPF lparams, Bloque b) {
-			super(id, b);
 			this.lparams = lparams;
 		}
-
+		
 		public LPF lparams() {
 			return lparams;
 		}
@@ -1234,7 +1226,13 @@ public class TinyASint {
 		public void procesa(Procesamiento p) {
 			p.procesa(this);
 		}
+		
+		public Bloque bloque() {
+			return bloque;
+		}
+
 	}
+
 
 	public static abstract class LPF {
 		public LPF() {
@@ -1304,8 +1302,8 @@ public class TinyASint {
 
 	}
 
-	public static class Param_amp extends PF {
-		public Param_amp(Tipo tipo, StringLocalizado id) {
+	public static class Param_con_et extends PF {
+		public Param_con_et(Tipo tipo, StringLocalizado id) {
 			super(tipo, id);
 		}
 
@@ -1314,8 +1312,8 @@ public class TinyASint {
 		}
 	}
 
-	public static class Param_sin_amp extends PF {
-		public Param_sin_amp(Tipo tipo, StringLocalizado id) {
+	public static class Param_sin_et extends PF {
+		public Param_sin_et(Tipo tipo, StringLocalizado id) {
 			super(tipo, id);
 		}
 
@@ -1324,28 +1322,10 @@ public class TinyASint {
 		}
 	}
 
-	public static abstract class Bloque {
-		public Bloque() {
-		}
-
-		public abstract void procesa(Procesamiento p);
-	}
-
-	public static class Bloque_vacio extends Bloque {
-		public Bloque_vacio() {
-			super();
-		}
-
-		public void procesa(Procesamiento p) {
-			p.procesa(this);
-		}
-	}
-
-	public static class Bloque_lleno extends Bloque {
+	public static class Bloque {
 		private Prog prog;
-
-		public Bloque_lleno(Prog prog) {
-			super();
+		
+		public Bloque(Prog prog) {
 			this.prog = prog;
 		}
 
@@ -1358,20 +1338,21 @@ public class TinyASint {
 		}
 	}
 
+	
 	// Constructoras
 	public Prog prog_con_dec(LDecs ldecs, LInst linst) {
 		return new Prog_con_dec(ldecs, linst);
 	}
 
-	public Prog prog_sin_decs(LInst linst) {
+	public Prog prog_sin_dec(LInst linst) {
 		return new Prog_sin_dec(linst);
 	}
 
-	public LDecs decs_una(Dec dec) {
+	public LDecs lista_dec_una(Dec dec) {
 		return new LDecs_una(dec);
 	}
 
-	public LDecs decs_muchas(LDecs ldecs, Dec dec) {
+	public LDecs lista_dec_muchas(LDecs ldecs, Dec dec) {
 		return new LDecs_muchas(ldecs, dec);
 	}
 
@@ -1396,11 +1377,11 @@ public class TinyASint {
 	}
 
 	public PF param_con_et(Tipo tipo, StringLocalizado id) {
-		return new Param_amp(tipo, id);
+		return new Param_con_et(tipo, id);
 	}
 
 	public PF param_sin_et(Tipo tipo, StringLocalizado id) {
-		return new Param_sin_amp(tipo, id);
+		return new Param_sin_et(tipo, id);
 	}
 
 	public Tipo tipo_Entero() {
@@ -1467,12 +1448,12 @@ public class TinyASint {
 		return new Inst_if_then_else(exp, linst, linst1);
 	}
 
-	public LInst_aux linst_aux_vacia() {
-		return new LInst_aux_vacia();
+	public LInst_aux aux_linst_vacia() {
+		return new Aux_linst_vacia();
 	}
 
-	public LInst_aux linst_aux(LInst linst) {
-		return new LInst_aux_llena(linst);
+	public LInst_aux aux_linst_una(LInst linst) {
+		return new Aux_linst_una(linst);
 
 	}
 
@@ -1504,16 +1485,16 @@ public class TinyASint {
 		return new Inst_call_sin_params(id);
 	}
 
-	public Inst inst_call_con_params(StringLocalizado id, LReal_params params) {
+	public Inst inst_call_con_params(StringLocalizado id, LParreg params) {
 		return new Inst_call_con_params(id, params);
 	}
 
-	public LReal_params l_real_params_uno(Exp exp) {
-		return new LReal_Params_uno(exp);
+	public LParreg par_reg_una(Exp exp) {
+		return new Par_reg_una(exp);
 	}
 
-	public LReal_params l_real_params_muchos(LReal_params params, Exp exp) {
-		return new LReal_Params_muchos(params, exp);
+	public LParreg par_reg_muchas(Exp exp, LParreg params) {
+		return new Par_reg_muchas(exp, params);
 	}
 
 	public Inst inst_compuesta(Bloque b) {
@@ -1521,11 +1502,7 @@ public class TinyASint {
 	}
 
 	public Bloque bloque(Prog prog) {
-		return new Bloque_lleno(prog);
-	}
-
-	public Bloque bloque_vacio() {
-		return new Bloque_vacio();
+		return new Bloque(prog);
 	}
 
 	public Exp suma(Exp arg0, Exp arg1) {
@@ -1588,12 +1565,12 @@ public class TinyASint {
 		return new Menos_unario(exp);
 	}
 
-	public Exp numEnt(StringLocalizado num) {
-		return new NumEnt(num);
+	public Exp num_int(StringLocalizado num) {
+		return new Num_int(num);
 	}
 
-	public Exp numReal(StringLocalizado num) {
-		return new NumReal(num);
+	public Exp num_real(StringLocalizado num) {
+		return new Num_Real(num);
 	}
 
 	public Exp identificador(StringLocalizado id) {

@@ -2,13 +2,14 @@ package main;
 
 
 import asint.TinyASint.Prog;
+
 import procesamientos.Impresion;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import alex.AnalizadorLexicoTiny;
+import c_ast_ascendente.AnalizadorLexicoTiny;
 
 
 public class Main {
@@ -19,7 +20,7 @@ public class Main {
            prog = ejecuta_ascendente(args[1]);
        }
        else if (args[0].equals("-desc")) {
-           prog = ejecuta_descendente(args[1]);
+//           prog = ejecuta_descendente(args[1]);
     	   System.out.println("Ejecutando constructor AST descendente \n");
        }
        else 
@@ -37,11 +38,12 @@ public class Main {
 	     AnalizadorLexicoTiny alex = new AnalizadorLexicoTiny(input);
 	     c_ast_ascendente.ConstructorAST constructorast =  new c_ast_ascendente.ConstructorAST(alex);
 	     return (Prog)constructorast.parse().value;
-	  }
-	   private static Prog ejecuta_descendente(String in) throws Exception {
-	     Reader input = new InputStreamReader(new FileInputStream(in));
-	     c_ast_descendente.ConstructorAST constructorast = new c_ast_descendente.ConstructorAST(input);
-	     return constructorast.Init();
-	   }
+   }
+   
+//   private static Prog ejecuta_descendente(String in) throws Exception {
+//	     Reader input = new InputStreamReader(new FileInputStream(in));
+//	     c_ast_descendente.ConstructorAST constructorast = new c_ast_descendente.ConstructorAST(input);
+//	     return constructorast.Init();
+//   }
 }   
    

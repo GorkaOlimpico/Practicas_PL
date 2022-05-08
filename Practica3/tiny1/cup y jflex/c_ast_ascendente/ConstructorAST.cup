@@ -6,15 +6,15 @@ import semops.SemOps;
 import asint.TinyASint.Prog;
 import asint.TinyASint.LDecs;
 import asint.TinyASint.Dec;
-import asint.TinyASint.LPFs;
+import asint.TinyASint.LPF;
 import asint.TinyASint.PF;
 import asint.TinyASint.Tipo;
-import asint.TinyASint.LCampos;
+import asint.TinyASint.LCampo;
 import asint.TinyASint.Campo;
 import asint.TinyASint.LInst;
 import asint.TinyASint.Inst;
 import asint.TinyASint.LInst_aux;
-import asint.TinyASint.LLPARREG;
+import asint.TinyASint.LParreg;
 import asint.TinyASint.Bloque;
 import asint.TinyASint.Exp;
 import asint.TinyASint.StringLocalizado;
@@ -46,16 +46,16 @@ terminal    sep_prog,pto_coma,asig,mas,menos,por,div,mod,blt,bgt,ble,bge,beq,bne
 non terminal Prog PROG;
 non terminal LDecs LDECS;
 non terminal Dec DEC;
-non terminal Lpf LPF;
-non terminal Pf LPF;
+non terminal LPF LPF;
+non terminal PF PF;
 non terminal Tipo TIPO;
-non terminal LCampos LCAMPO;
+non terminal LCampo LCAMPO;
 non terminal Campo CAMPO;
 non terminal LInst LINST;
 non terminal Inst INST;
 non terminal LInst_aux AUX_LINST;
-non terminal Lpar_reg LPARREG ;
-non terminal Bloq BLOQ;
+non terminal LParreg LPARREG ;
+non terminal Bloque BLOQ;
 non terminal Exp E0,E1,E2,E3,E4,E5,E6,E7;
 non terminal String OPBNA,OPBAI2,OPBAI1;
 
@@ -68,27 +68,27 @@ LDECS ::= LDECS : ldecs pto_coma DEC : dec
             {: RESULT = sem.lista_dec_muchas(ldecs,dec); :};
 LDECS ::= DEC : dec
             {: RESULT = sem.lista_dec_una(dec); :};
-DEC ::= var TIPO : tipo id : id
+DEC ::= r_var TIPO : tipo id : id
             {: RESULT = sem.dec_var(tipo,id); :};
-DEC ::= type TIPO : tipo id : id
-            {: RESULT = sem.dec_tipo(tipo,id); :};
-DEC ::= proc id : id pap LPF : lpf pcierre BLOQ : b
+DEC ::= r_type TIPO : tipo id : id
+            {: RESULT = sem.dec_type(tipo,id); :};
+DEC ::= r_proc id : id pap LPF : lpf pcierre BLOQ : b
             {: RESULT = sem.dec_proc(id,lpf,b); :};
 LPF ::= LPF : lpf coma PF : pf
             {: RESULT = sem.param_muchas(lpf,pf); :};
 LPF ::= PF : pf
             {: RESULT = sem.param_una(pf); :};
 PF ::= TIPO : t et id : id
-            {: RESULT = sem.PF_con_et(t,id); :};
+            {: RESULT = sem.param_con_et(t,id); :};
 PF ::= TIPO : t id : id
-            {: RESULT = sem.PF_sin_et(t,id); :};
-TIPO ::=  t_bool
+            {: RESULT = sem.param_sin_et(t,id); :};
+TIPO ::=  r_bool
             {: RESULT = sem.tipo_Bool(); :};
-TIPO ::=  t_real 
+TIPO ::=  r_real 
             {: RESULT = sem.tipo_Real(); :};
-TIPO ::=  t_int 
+TIPO ::=  r_int 
             {: RESULT = sem.tipo_Entero(); :};
-TIPO ::=  t_string 
+TIPO ::=  r_string 
             {: RESULT = sem.tipo_String(); :};
 TIPO ::= r_array cap lit_int : lit_int ccierre r_of TIPO : t
             {: RESULT = sem.tipo_Array(lit_int,t); :};
@@ -117,7 +117,7 @@ INST ::= r_if E0 : e0 r_then AUX_LINST : aux_l r_else AUX_LINST : aux_l_1 r_endi
 INST ::= r_while E0 : e0 r_do AUX_LINST : aux_l r_endwhile
          {: RESULT = sem.inst_while(e0,aux_l); :};     
 AUX_LINST ::= LINST : linst
-         {: RESULT = sem.aux_inst_una(linst); :};
+         {: RESULT = sem.aux_linst_una(linst); :};
 AUX_LINST ::=
          {: RESULT = sem.aux_linst_vacia(); :};
 INST ::= r_read E0 : e0
@@ -128,7 +128,7 @@ INST ::= r_nl
          {: RESULT = sem.inst_nl(); :};
 INST  ::= r_new E0 : e0
          {: RESULT = sem.inst_new(e0); :};
-INST  ::= r_delete E0 : e0
+INST  ::= r_del E0 : e0
          {: RESULT = sem.inst_delete(e0); :};
 INST ::= r_call id : id pap LPARREG : lparreg pcierre
          {: RESULT = sem.inst_call_con_params(id,lparreg); :};
@@ -141,7 +141,7 @@ LPARREG ::= E0 : e0 coma LPARREG : lparreg
 LPARREG ::= E0 : e0
          {: RESULT = sem.par_reg_una(e0); :};
 BLOQ ::= llap PROG : p llcierre
-         {: RESULT = sem.bloq(p); :};
+         {: RESULT = sem.bloque(p); :};
 E0 ::= E1 : e1 mas E0 : e0
       {: RESULT = sem.exp("+",e1,e0); :};
 E0 ::= E1 : e10 menos E1 : e11
@@ -162,7 +162,7 @@ E3 ::= E4 : e4
       {: RESULT = e4; :};
 E4 ::= menos E5 : e5
       {: RESULT = sem.menos_unario(e5); :};
-E4 ::= not E4 : e4
+E4 ::= r_not E4 : e4
       {: RESULT = sem.c_not(e4); :};
 E4 ::= E5 : e5
       {: RESULT = e5; :};
@@ -215,9 +215,9 @@ OPBAI2 ::= blt
 OPBAI2 ::= bgt
     {: RESULT = ">"; :};
 
-OPBAI1 ::= and
+OPBAI1 ::= r_and
     {: RESULT = "and"; :};
-OPBAI1 ::= or
+OPBAI1 ::= r_or
     {: RESULT = "or"; :};
 
 

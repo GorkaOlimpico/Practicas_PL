@@ -1,6 +1,5 @@
-package errors;
+package c_ast_ascendente;
 
-import alex.UnidadLexica;
 
 public class GestionErroresTiny {
    public void errorLexico(int fila, String lexema) {
