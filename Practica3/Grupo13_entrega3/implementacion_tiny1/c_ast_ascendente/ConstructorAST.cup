@@ -1,0 +1,226 @@
+package c_ast_ascendente;
+
+import java_cup.runtime.*;
+
+import semops.SemOps;
+import asint.TinyASint.Prog;
+import asint.TinyASint.LDecs;
+import asint.TinyASint.Dec;
+import asint.TinyASint.LPF;
+import asint.TinyASint.PF;
+import asint.TinyASint.Tipo;
+import asint.TinyASint.LCampo;
+import asint.TinyASint.Campo;
+import asint.TinyASint.LInst;
+import asint.TinyASint.Inst;
+import asint.TinyASint.LInst_aux;
+import asint.TinyASint.LParreg;
+import asint.TinyASint.Bloque;
+import asint.TinyASint.Exp;
+import asint.TinyASint.StringLocalizado;
+
+scan with {: return getScanner().next_token(); :};
+action code {:
+   private SemOps sem = new SemOps();
+:};
+parser code {: 
+   private GestionErroresTiny errores;
+   public void syntax_error(Symbol unidadLexica) {
+     errores.errorSintactico((UnidadLexica)unidadLexica);
+   }  
+:};
+init with {: 
+   errores = new GestionErroresTiny();
+   AnalizadorLexicoTiny alex = (AnalizadorLexicoTiny)getScanner();
+   alex.fijaGestionErrores(errores);
+:};
+
+
+terminal    sep_prog,pto_coma,asig,mas,menos,por,div,mod,blt,bgt,ble,bge,beq,bne,
+            pap,pcierre,cap,ccierre,llap,llcierre,flecha,coma,punto,et,r_int,r_real,r_bool,r_true,
+            r_false,r_and,r_or,r_not,r_string,r_null,r_proc,r_if,r_then,r_else,r_endif,r_while,r_do,r_endwhile,
+			r_call,r_record,r_array,r_of,r_pointer,r_new,r_read,r_write,r_nl,r_var,r_type,r_del;
+
+			terminal StringLocalizado lit_real,lit_cad,id,lit_int;
+
+non terminal Prog PROG;
+non terminal LDecs LDECS;
+non terminal Dec DEC;
+non terminal LPF LPF;
+non terminal PF PF;
+non terminal Tipo TIPO;
+non terminal LCampo LCAMPO;
+non terminal Campo CAMPO;
+non terminal LInst LINST;
+non terminal Inst INST;
+non terminal LInst_aux AUX_LINST;
+non terminal LParreg LPARREG ;
+non terminal Bloque BLOQ;
+non terminal Exp E0,E1,E2,E3,E4,E5,E6,E7;
+non terminal String OPBNA,OPBAI2,OPBAI1;
+
+
+PROG ::= LDECS : ldecs sep_prog  LINST : linst
+            {: RESULT = sem.prog_con_dec(ldecs,linst); :};
+PROG ::= LINST : linst
+            {: RESULT = sem.prog_sin_dec(linst); :};
+LDECS ::= LDECS : ldecs pto_coma DEC : dec
+            {: RESULT = sem.lista_dec_muchas(ldecs,dec); :};
+LDECS ::= DEC : dec
+            {: RESULT = sem.lista_dec_una(dec); :};
+DEC ::= r_var TIPO : tipo id : id
+            {: RESULT = sem.dec_var(tipo,id); :};
+DEC ::= r_type TIPO : tipo id : id
+            {: RESULT = sem.dec_type(tipo,id); :};
+DEC ::= r_proc id : id pap LPF : lpf pcierre BLOQ : b
+            {: RESULT = sem.dec_proc_con_params(id,lpf,b); :};
+DEC ::= r_proc id : id pap pcierre BLOQ : b
+            {: RESULT = sem.dec_proc_sin_params(id,b); :};
+LPF ::= LPF : lpf coma PF : pf
+            {: RESULT = sem.param_muchas(lpf,pf); :};
+LPF ::= PF : pf
+            {: RESULT = sem.param_una(pf); :};
+PF ::= TIPO : t et id : id
+            {: RESULT = sem.param_con_et(t,id); :};
+PF ::= TIPO : t id : id
+            {: RESULT = sem.param_sin_et(t,id); :};
+TIPO ::=  r_bool
+            {: RESULT = sem.tipo_Bool(); :};
+TIPO ::=  r_real 
+            {: RESULT = sem.tipo_Real(); :};
+TIPO ::=  r_int 
+            {: RESULT = sem.tipo_Entero(); :};
+TIPO ::=  r_string 
+            {: RESULT = sem.tipo_String(); :};
+TIPO ::= r_array cap lit_int : lit_int ccierre r_of TIPO : t
+            {: RESULT = sem.tipo_Array(lit_int,t); :};
+TIPO ::= r_record llap LCAMPO : lcampo llcierre
+         {: RESULT = sem.tipo_Record(lcampo); :};
+TIPO ::= r_pointer TIPO : t
+         {: RESULT = sem.tipo_Pointer(t); :};
+TIPO ::= id : id
+         {: RESULT = sem.tipo_Id(id); :};
+LCAMPO ::= LCAMPO : lcampo pto_coma CAMPO : campo
+         {: RESULT = sem.campo_muchas(lcampo,campo); :};
+LCAMPO ::= CAMPO : campo
+         {: RESULT = sem.campo_una(campo); :};
+CAMPO ::= TIPO : t id : id
+         {: RESULT = sem.campo(t,id); :};
+LINST ::= LINST : linst pto_coma INST : inst
+         {: RESULT = sem.lista_inst_muchas(linst,inst); :};
+LINST ::= INST : inst
+         {: RESULT = sem.lista_inst_una(inst); :};
+INST ::= E0 : e00 asig E0 : e01
+         {: RESULT = sem.inst_asig(e00,e01); :};
+INST ::= r_if E0 : e0 r_then AUX_LINST : aux_l r_endif
+         {: RESULT = sem.inst_if_then(e0,aux_l); :};
+INST ::= r_if E0 : e0 r_then AUX_LINST : aux_l r_else AUX_LINST : aux_l_1 r_endif
+         {: RESULT = sem.inst_if_then_else(e0,aux_l,aux_l_1); :};
+INST ::= r_while E0 : e0 r_do AUX_LINST : aux_l r_endwhile
+         {: RESULT = sem.inst_while(e0,aux_l); :};     
+AUX_LINST ::= LINST : linst
+         {: RESULT = sem.aux_linst_una(linst); :};
+AUX_LINST ::=
+         {: RESULT = sem.aux_linst_vacia(); :};
+INST ::= r_read E0 : e0
+         {: RESULT = sem.inst_read(e0); :};
+INST ::= r_write E0 : e0
+         {: RESULT = sem.inst_write(e0); :};
+INST ::= r_nl
+         {: RESULT = sem.inst_nl(); :};
+INST  ::= r_new E0 : e0
+         {: RESULT = sem.inst_new(e0); :};
+INST  ::= r_del E0 : e0
+         {: RESULT = sem.inst_delete(e0); :};
+INST ::= r_call id : id pap LPARREG : lparreg pcierre
+         {: RESULT = sem.inst_call_con_params(id,lparreg); :};
+INST ::= r_call id : id pap pcierre
+         {: RESULT = sem.inst_call_sin_params(id); :};
+INST ::= BLOQ : b
+         {: RESULT = sem.inst_compuesta(b); :};
+LPARREG ::= E0 : e0 coma LPARREG : lparreg
+         {: RESULT = sem.par_reg_muchas(e0,lparreg); :};
+LPARREG ::= E0 : e0
+         {: RESULT = sem.par_reg_una(e0); :};
+BLOQ ::= llap PROG : p llcierre
+         {: RESULT = sem.bloque(p); :};
+E0 ::= E1 : e1 mas E0 : e0
+      {: RESULT = sem.exp("+",e1,e0); :};
+E0 ::= E1 : e10 menos E1 : e11
+      {: RESULT = sem.exp("-",e10,e11); :};
+E0 ::= E1 : e1
+      {: RESULT = e1; :};
+E1 ::= E1 : e1 OPBAI1 : op E2 : e2
+      {: RESULT = sem.exp(op,e1,e2); :};
+E1 ::= E2 : e2
+      {: RESULT = e2; :};
+E2 ::= E2 : e2 OPBAI2 : op E3 : e3
+      {: RESULT = sem.exp(op,e2,e3); :};
+E2 ::= E3 : e3
+      {: RESULT = e3; :};
+E3 ::= E4 : e40 OPBNA : op E4 : e41
+      {: RESULT = sem.exp(op,e40,e41); :};
+E3 ::= E4 : e4
+      {: RESULT = e4; :};
+E4 ::= menos E5 : e5
+      {: RESULT = sem.menos_unario(e5); :};
+E4 ::= r_not E4 : e4
+      {: RESULT = sem.c_not(e4); :};
+E4 ::= E5 : e5
+      {: RESULT = e5; :};
+E5 ::= E5 : e5 cap E0 : e0 ccierre
+      {: RESULT = sem.index(e5,e0); :};
+E5 ::= E5 : e5 punto id : id
+      {: RESULT = sem.punto(e5,id); :};
+E5 ::= E5 : e5 flecha id : id
+      {: RESULT = sem.flecha(e5,id); :};
+E5 ::= E6 : e6
+      {: RESULT = e6; :};
+E6 ::= por E6 : e6
+      {: RESULT = sem.indireccion(e6); :};
+E6 ::= E7 : e7
+      {: RESULT = e7; :};
+E7 ::= pap E0 : e0 pcierre
+      {: RESULT = e0; :};
+E7 ::= r_null
+      {: RESULT = sem.c_null(); :};
+E7 ::= id : id
+      {: RESULT = sem.identificador(id); :};
+E7 ::= r_false 
+      {: RESULT = sem.c_false(); :};   
+E7 ::=  r_true 
+      {: RESULT = sem.c_true(); :};   
+E7 ::= lit_cad : cad
+      {: RESULT = sem.c_str(cad); :};
+E7 ::= lit_real : num
+      {: RESULT = sem.num_real(num); :};        
+E7 ::=  lit_int : num
+      {: RESULT = sem.num_int(num); :};  
+       
+OPBNA ::= por
+    {: RESULT = "*"; :};
+OPBNA ::= div
+    {: RESULT = "/"; :};
+OPBNA ::= mod
+    {: RESULT = "%"; :};
+
+OPBAI2 ::= bne
+    {: RESULT = "!="; :};
+OPBAI2 ::= beq
+    {: RESULT = "=="; :};
+OPBAI2 ::= ble
+    {: RESULT = "<="; :};
+OPBAI2 ::= bge
+    {: RESULT = ">="; :};
+OPBAI2 ::= blt
+    {: RESULT = "<"; :};
+OPBAI2 ::= bgt
+    {: RESULT = ">"; :};
+
+OPBAI1 ::= r_and
+    {: RESULT = "and"; :};
+OPBAI1 ::= r_or
+    {: RESULT = "or"; :};
+
+
+
