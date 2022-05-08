@@ -1541,6 +1541,7 @@ public class TinyASint {
 	public Bloque bloque(Prog prog) {
 		return new Bloque(prog);
 	}
+	
 
 	public Exp suma(Exp arg0, Exp arg1) {
 		return new Suma(arg0, arg1);
